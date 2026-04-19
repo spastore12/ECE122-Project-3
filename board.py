@@ -346,7 +346,24 @@ class Board:
             Carefully map chess notation to array indices.
         """
         # TODO: Parse input into move coordinates
-        pass
+        text = text.replace(" ", "")
+        text = text.lower()
+
+        if len(text) !=4 and len(text) != 5:
+            return None
+
+        src_text = text[0:2]
+        dst_text = text[2:4]
+
+        src = parse_square(src_text)
+        dst = parse_square(dst_text)
+
+        if len(text) == 5:
+            promotion = text[4]
+            return Move(src, dst, promotion)
+
+        return Move(src, dst)
+
 
     def play_move_text(self, text: str) -> Move:
         #Parse move, apply, return move
