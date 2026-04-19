@@ -197,7 +197,27 @@ class Board:
             Check piece color before generating moves.
         """
         # TODO: Collect moves from all pieces
-        pass
+        moves = []
+        for r in range(8):
+            for c in range(8):
+                p = self.grid[r][c]
+
+                if p is None:
+                    continue
+
+                if p.color != self.turn:
+                    continue
+
+                piece_moves = p.pseudo_legal_moves(self, r, c)
+
+                for move in piece_moves:
+                    moves.append(move)
+
+        return moves
+
+
+
+
 
     def generate_legal_moves(self) -> List[Move]:
         """
@@ -350,7 +370,7 @@ class Board:
         text = text.lower()
 
         if len(text) !=4 and len(text) != 5:
-            return None
+            raise ValueError()
 
         src_text = text[0:2]
         dst_text = text[2:4]
