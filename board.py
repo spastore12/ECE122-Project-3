@@ -243,7 +243,14 @@ class Board:
             Use apply_move() and undo functionality if available.
         """
         # TODO: Filter pseudo-legal moves into legal moves
-        pass
+        legal_moves = []
+        for move in self.generate_pseudo_legal_moves():
+            color = self.turn
+            self.apply_move(move)
+            if not self.in_check(color):  # did the mover leave their own king in check
+                legal_moves.append(move)
+            self.undo_move(move)
+        return legal_moves
 
     def is_game_over(self) -> bool:
         """
