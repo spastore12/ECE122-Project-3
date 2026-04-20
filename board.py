@@ -300,7 +300,15 @@ class Board:
             Use is_game_over() and in_check() to decide.
         """
         # TODO: Determine game result
-        pass
+        if self.is_game_over() == False:
+            return "ongoing"
+        elif self.in_check():
+            if self.opposite(self.turn) == "b":
+                return "black wins by checkmate"
+            else:
+                return "white wins by checkmate"
+        else:
+            return "draw by stalemate"
 
     def position_key(self) -> str:
         #Builds a string representation of the board plus side to move.
