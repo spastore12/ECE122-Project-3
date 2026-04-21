@@ -114,7 +114,24 @@ class Piece:
             Use a loop to continue stepping in each direction.
         """
         # TODO: Implement sliding movement logic
-       #  pass
+        moves = []
+        for (rowDir,colDir) in dirs:
+            nextRow = r + rowDir
+            nextCol = c + colDir
+
+            while in_bounds(nextRow,nextCol):
+                potentialPiece = board.piece_at(nextRow,nextCol)
+                if potentialPiece == None:
+                    moves.append(Move((r, c), (nextRow, nextCol)))
+                    nextRow += rowDir
+                    nextCol += colDir
+                elif potentialPiece.color != self.color:
+                    moves.append(Move((r,c),(nextRow,nextCol)))
+                    break
+                else:
+                    break
+        return moves
+               
 
     def _step_moves(self, board: "Board", r: int, c: int, deltas: List[Tuple[int, int]]) -> List[Move]:
 
