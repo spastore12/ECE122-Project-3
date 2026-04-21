@@ -243,7 +243,14 @@ class Board:
             Use apply_move() and undo functionality if available.
         """
         # TODO: Filter pseudo-legal moves into legal moves
-        pass
+        legal_moves = []
+        for move in self.generate_pseudo_legal_moves():
+            color = self.turn
+            self.apply_move(move)
+            if not self.in_check(color):  # did the mover leave their own king in check
+                legal_moves.append(move)
+            self.undo_move(move)
+        return legal_moves
 
     def is_game_over(self) -> bool:
         """
@@ -265,7 +272,10 @@ class Board:
             Check if there are no legal moves
         """
         # TODO: Implement game-ending condition
-        pass
+        if len(self.generate_legal_moves()) == 0:
+            return True
+        else:
+            return False
 
     def result(self) -> str:
 
@@ -290,7 +300,15 @@ class Board:
             Use is_game_over() and in_check() to decide.
         """
         # TODO: Determine game result
-        pass
+        if self.is_game_over() == False:
+            return "ongoing"
+        elif self.in_check():
+            if self.opposite(self.turn) == "b":
+                return "black wins by checkmate"
+            else:
+                return "white wins by checkmate"
+        else:
+            return "draw by stalemate"
 
     def position_key(self) -> str:
         #Builds a string representation of the board plus side to move.
