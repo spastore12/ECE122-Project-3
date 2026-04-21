@@ -180,7 +180,7 @@ class Pawn(Piece):
     value = 100 #Worth 100 in ealuation function
 
     def pseudo_legal_moves(self, board: "Board", r: int, c: int) -> List[Move]:
-                """
+        """
         Generate all pseudo-legal moves for a pawn.
 
         Parameters:
@@ -209,7 +209,52 @@ class Pawn(Piece):
             Check forward square and diagonal squares separately.
         """
         # TODO: Implement pawn movement logic
-    #  pass
+
+        moves = []
+        if self.color == "w":
+            forward = -1
+            start_row = 6
+            promotion_row = 0
+        else:
+            forward = 1
+            start_row = 1
+            promotion_row = 7
+
+        # One square forward
+        one_forward = r + forward
+        if in_bounds(one_forward, c) and board.grid[one_forward][c] is None:
+            if one_forward == promotion_row:
+                for promo in ["q", "r", "b", "n"]:
+                    moves.append(Move((r, c), (one_forward, c), promo))
+            else:
+                moves.append(Move((r, c), (one_forward, c)))
+
+            #Two squares forward
+            two_forward = r + 2 * forward
+            if r == start_row:
+                if in_bounds(two_forward, c):
+                    if board.grid[one_forward][c] is None and board.grid[two_forward][c] is None:
+                        moves.append(Move((r, c), (two_forward, c)))
+
+            # Diagonal captures
+            for dc in [-1, 1]:
+                new_row = r + forward
+                new_col = c + dc
+
+                if not in_bounds(new_row, new_col):
+                    continue
+
+                target = board.grid[new_row][new_col]
+
+                if target is not None and target.color != self.color:
+                    if new_row == promotion_row:
+                        for promo in ["q", "r", "b", "n"]:
+                            moves.append(Move((r, c), (new_row, new_col), promo, None, target))
+                    else:
+                        moves.append(Move((r, c), (new_row, new_col), None, None, target))
+
+        return moves
+
 
 #Same template now for rest
 class Knight(Piece):
