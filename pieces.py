@@ -142,7 +142,27 @@ class Piece:
             Loop through each (dr, dc) in steps and check the resulting square.
         """
         # TODO: Implement step-based movement logic
-        pass
+        moves = []
+        for (dr,dc) in deltas:
+            new_row = r + dr
+            new_col = c + dc
+
+            if not in_bounds(new_row, new_col):
+                continue
+
+            target = board.grid[new_row][new_col]
+
+            if target is None:
+                moves.append( Move((r,c),(new_row, new_col)) )
+
+            elif target.color != self.color:
+                moves.append( Move((r,c),(new_row, new_col), None, None, target) )
+
+            elif target.color == self.color:
+                continue
+
+        return moves
+
        
 
     def pseudo_legal_moves(self, board: "Board", r: int, c: int) -> List[Move]:
