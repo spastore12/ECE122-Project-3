@@ -89,7 +89,7 @@ class Piece:
         return type(self)(self.color)
 
     def _slide_moves(self, board: "Board", r: int, c: int, dirs: List[Tuple[int, int]]) -> List[Move]:
-       """
+        """
         Generate moves for pieces that move continuously in a direction (sliding pieces).
 
         Parameters:
@@ -113,20 +113,21 @@ class Piece:
         Hint:
             Use a loop to continue stepping in each direction.
         """
-        # TODO: Implement sliding movement logic
-        moves = []
-        for (rowDir,colDir) in dirs:
-            nextRow = r + rowDir
-            nextCol = c + colDir
+        #TODO: Implement sliding movement logic
 
-            while in_bounds(nextRow,nextCol):
-                potentialPiece = board.piece_at(nextRow,nextCol)
+        moves = []
+        for (dr,dc) in dirs:
+            next_row = r + dr
+            next_col = c + dc
+
+            while in_bounds(next_row,next_col):
+                potentialPiece = board.piece_at(next_row,next_col)
                 if potentialPiece == None:
-                    moves.append(Move((r, c), (nextRow, nextCol)))
-                    nextRow += rowDir
-                    nextCol += colDir
+                    moves.append(Move((r, c), (next_row, next_col)))
+                    next_row += dr
+                    next_col += dc
                 elif potentialPiece.color != self.color:
-                    moves.append(Move((r,c),(nextRow,nextCol)))
+                    moves.append(Move((r,c),(dr,dc)))
                     break
                 else:
                     break
@@ -246,29 +247,28 @@ class Pawn(Piece):
             else:
                 moves.append(Move((r, c), (one_forward, c)))
 
-            #Two squares forward
-            two_forward = r + 2 * forward
-            if r == start_row:
-                if in_bounds(two_forward, c):
-                    if board.grid[one_forward][c] is None and board.grid[two_forward][c] is None:
-                        moves.append(Move((r, c), (two_forward, c)))
+        #Two squares forward
+        two_forward = r + 2 * forward
+        if r == start_row:
+            if in_bounds(two_forward, c):
+                if board.grid[one_forward][c] is None and board.grid[two_forward][c] is None:
+                    moves.append(Move((r, c), (two_forward, c)))
 
-            # Diagonal captures
-            for dc in [-1, 1]:
-                new_row = r + forward
-                new_col = c + dc
+        # Diagonal captures
+        for dc in [-1, 1]:
+            new_row = r + forward
+            new_col = c + dc
+            if not in_bounds(new_row, new_col):
+                continue
 
-                if not in_bounds(new_row, new_col):
-                    continue
+            target = board.grid[new_row][new_col]
 
-                target = board.grid[new_row][new_col]
-
-                if target is not None and target.color != self.color:
-                    if new_row == promotion_row:
-                        for promo in ["q", "r", "b", "n"]:
-                            moves.append(Move((r, c), (new_row, new_col), promo, None, target))
-                    else:
-                        moves.append(Move((r, c), (new_row, new_col), None, None, target))
+            if target is not None and target.color != self.color:
+                if new_row == promotion_row:
+                    for promo in ["q", "r", "b", "n"]:
+                        moves.append(Move((r, c), (new_row, new_col), promo, None, target))
+                else:
+                    moves.append(Move((r, c), (new_row, new_col), None, None, target))
 
         return moves
 
@@ -279,7 +279,7 @@ class Knight(Piece):
     value = 320
 
     def pseudo_legal_moves(self, board: "Board", r: int, c: int) -> List[Move]:
-                """
+        """
         Generate all pseudo-legal moves for a knight.
 
         Parameters:
@@ -303,7 +303,15 @@ class Knight(Piece):
             Use a predefined list of 8 possible moves.
         """
         # TODO: Implement knight movement logic using step moves
-    #  pass
+        deltas = [
+            (-2, -1), (-2, 1),
+            (2, -1), (2, 1),
+            (-1, -2), (-1, 2),
+            (1, -2), (1, 2)
+        ]
+
+        return self._step_moves(board, r, c, deltas)
+
 
 
 class Bishop(Piece):
@@ -319,7 +327,7 @@ class Rook(Piece):
     value = 500
 
     def pseudo_legal_moves(self, board: "Board", r: int, c: int) -> List[Move]:
-         """
+        """
         Generate all pseudo-legal moves for a rook.
 
         Parameters:
@@ -341,7 +349,7 @@ class Rook(Piece):
             Call the sliding move helper with the correct directions.
         """
         # TODO: Implement rook movement using sliding moves
-    #  pass
+        pass
 
 
 
