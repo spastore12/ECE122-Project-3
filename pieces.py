@@ -349,7 +349,7 @@ class Rook(Piece):
             Call the sliding move helper with the correct directions.
         """
         # TODO: Implement rook movement using sliding moves
-        pass
+        return self._slide_moves(board, r, c, [(-1, 0), (1, 0), (0, -1), (0, 1)])
 
 
 
